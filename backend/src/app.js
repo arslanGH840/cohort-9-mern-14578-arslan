@@ -12,8 +12,8 @@ const app = express();
 
 app.use(helmet());
 app.use(cors({ origin: env.frontendOrigin }));
-app.use(express.json());
 app.use(pinoHttp({ logger }));
+app.use(express.json());
 
 app.use("/", routes);
 

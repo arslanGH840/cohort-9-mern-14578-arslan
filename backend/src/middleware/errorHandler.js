@@ -1,9 +1,21 @@
 const env = require("../config/env");
 
+const normalizeStatusCode = (code) => {
+  const parsed = Number(code);
+  if (Number.isInteger(parsed) && parsed >= 400 && parsed <= 599) {
+    return parsed;
+  }
+  return 500;
+};
+
 const errorHandler = (err, req, res, next) => {
   req.log?.error({ err }, "Unhandled error");
 
-  const statusCode = err.statusCode || 500;
+  if (res.headersSent) {
+    return next(err);
+  }
+
+  const statusCode = normalizeStatusCode(err.statusCode);
 
   res.status(statusCode).json({
     success: false,
