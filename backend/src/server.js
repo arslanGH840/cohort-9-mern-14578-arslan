@@ -10,4 +10,7 @@ const startServer = async () => {
   });
 };
 
-startServer();
+startServer().catch((error) => {
+  console.error("Fatal error during server startup:", error);
+  process.exit(1);
+});
