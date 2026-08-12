@@ -5,6 +5,7 @@ const {
 } = require("../repositories/userRepository");
 const { hashPassword, comparePassword } = require("../utils/password");
 const { signToken } = require("../utils/jwt");
+const { UniqueConstraintError } = require("sequelize");
 
 class ConflictError extends Error {
   constructor(message) {
@@ -39,9 +40,17 @@ const register = async ({ username, email, password }) => {
 
   const password_hash = await hashPassword(password);
 
-  const user = await createUser({ username, email, password_hash });
-
-  return user;
+  try {
+    const user = await createUser({ username, email, password_hash });
+    return user;
+  } catch (error) {
+    if (error instanceof UniqueConstraintError) {
+      throw new ConflictError(
+        "An account with this username or email already exists",
+      );
+    }
+    throw error;
+  }
 };
 
 const login = async ({ username, password }) => {
