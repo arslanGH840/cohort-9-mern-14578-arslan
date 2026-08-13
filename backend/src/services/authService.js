@@ -6,6 +6,7 @@ const {
 const { hashPassword, comparePassword } = require("../utils/password");
 const { signToken } = require("../utils/jwt");
 const { UniqueConstraintError } = require("sequelize");
+const logger = require("../config/logger");
 
 class ConflictError extends Error {
   constructor(message) {
@@ -42,6 +43,7 @@ const register = async ({ username, email, password }) => {
 
   try {
     const user = await createUser({ username, email, password_hash });
+    logger.info({ username: user.username }, "User registered successfully");
     return user;
   } catch (error) {
     if (error instanceof UniqueConstraintError) {
@@ -56,15 +58,18 @@ const register = async ({ username, email, password }) => {
 const login = async ({ username, password }) => {
   const user = await findByUsername(username);
   if (!user) {
+    logger.warn({ username }, "Login failed: unknown username");
     throw new AuthenticationError("Invalid username or password");
   }
 
   const isPasswordValid = await comparePassword(password, user.password_hash);
   if (!isPasswordValid) {
+    logger.warn({ username }, "Login failed: incorrect password");
     throw new AuthenticationError("Invalid username or password");
   }
 
   const token = signToken({ id: user.id, username: user.username });
+  logger.info({ username: user.username }, "User logged in successfully");
 
   return { user, token };
 };
