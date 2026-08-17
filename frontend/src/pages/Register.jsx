@@ -1,14 +1,12 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema } from "../validations/authSchemas";
-import { loginUser } from "../services/authService";
-import { useAuth } from "../context/AuthContext";
+import { registerSchema } from "../validations/authSchemas";
+import { registerUser } from "../services/authService";
 
-function Login() {
+function Register() {
   const navigate = useNavigate();
-  const { login } = useAuth();
   const [serverError, setServerError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -17,16 +15,15 @@ function Login() {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(registerSchema),
   });
 
   const onSubmit = async (data) => {
     setServerError("");
     setIsSubmitting(true);
     try {
-      const result = await loginUser(data);
-      login(result.data.user, result.data.token);
-      navigate("/");
+      await registerUser(data);
+      navigate("/login");
     } catch (error) {
       setServerError(
         error.response?.data?.error?.message ||
@@ -43,7 +40,7 @@ function Login() {
         onSubmit={handleSubmit(onSubmit)}
         className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm"
       >
-        <h1 className="text-2xl font-bold mb-6">Log In</h1>
+        <h1 className="text-2xl font-bold mb-6">Sign Up</h1>
 
         {serverError && (
           <div className="bg-red-50 text-red-600 text-sm p-3 rounded mb-4">
@@ -62,6 +59,18 @@ function Login() {
             <p className="text-red-500 text-sm mt-1">
               {errors.username.message}
             </p>
+          )}
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium mb-1">Email</label>
+          <input
+            type="email"
+            {...register("email")}
+            className="w-full border rounded px-3 py-2"
+          />
+          {errors.email && (
+            <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
           )}
         </div>
 
@@ -84,11 +93,18 @@ function Login() {
           disabled={isSubmitting}
           className="w-full bg-blue-600 text-white py-2 rounded disabled:opacity-50"
         >
-          {isSubmitting ? "Logging in..." : "Log In"}
+          {isSubmitting ? "Creating account..." : "Sign Up"}
         </button>
+
+        <p className="text-sm text-center mt-4">
+          Already have an account?{" "}
+          <Link to="/login" className="text-blue-600 hover:underline">
+            Log in
+          </Link>
+        </p>
       </form>
     </div>
   );
 }
 
-export default Login;
+export default Register;
