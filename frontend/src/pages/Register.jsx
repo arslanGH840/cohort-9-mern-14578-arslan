@@ -35,74 +35,97 @@ function Register() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm"
-      >
-        <h1 className="text-2xl font-bold mb-6">Sign Up</h1>
-
-        {serverError && (
-          <div className="bg-red-50 text-red-600 text-sm p-3 rounded mb-4">
-            {serverError}
-          </div>
-        )}
-
-        <div className="mb-4">
-          <label className="block text-sm font-medium mb-1">Username</label>
-          <input
-            type="text"
-            {...register("username")}
-            className="w-full border rounded px-3 py-2"
-          />
-          {errors.username && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.username.message}
-            </p>
-          )}
+    <div className="min-h-screen flex items-center justify-center bg-bg-page px-4 font-sans">
+      <div className="w-full max-w-md">
+        <div className="text-center mb-8">
+          <h1 className="text-2xl font-semibold tracking-tight text-text-primary">
+            Notes App
+          </h1>
+          <p className="text-text-secondary text-sm mt-2">
+            Create an account to get started
+          </p>
         </div>
 
-        <div className="mb-4">
-          <label className="block text-sm font-medium mb-1">Email</label>
-          <input
-            type="email"
-            {...register("email")}
-            className="w-full border rounded px-3 py-2"
-          />
-          {errors.email && (
-            <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
-          )}
-        </div>
-
-        <div className="mb-6">
-          <label className="block text-sm font-medium mb-1">Password</label>
-          <input
-            type="password"
-            {...register("password")}
-            className="w-full border rounded px-3 py-2"
-          />
-          {errors.password && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.password.message}
-            </p>
-          )}
-        </div>
-
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="w-full bg-blue-600 text-white py-2 rounded disabled:opacity-50"
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="bg-surface p-8 rounded-lg border border-border"
         >
-          {isSubmitting ? "Creating account..." : "Sign Up"}
-        </button>
+          {serverError && (
+            <div className="bg-error-bg text-error text-sm px-4 py-3 rounded-lg mb-5">
+              {serverError}
+            </div>
+          )}
 
-        <p className="text-sm text-center mt-4">
-          Already have an account?{" "}
-          <Link to="/login" className="text-blue-600 hover:underline">
-            Log in
-          </Link>
-        </p>
-      </form>
+          <div className="mb-5">
+            <label className="block text-sm font-medium text-text-primary mb-1.5">
+              Username
+            </label>
+            <input
+              type="text"
+              {...register("username")}
+              className="w-full border border-border rounded-lg px-4 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 transition"
+              placeholder="Choose a username"
+            />
+            {errors.username && (
+              <p className="text-error text-xs mt-1.5">
+                {errors.username.message}
+              </p>
+            )}
+          </div>
+
+          <div className="mb-5">
+            <label className="block text-sm font-medium text-text-primary mb-1.5">
+              Email
+            </label>
+            <input
+              type="email"
+              {...register("email")}
+              className="w-full border border-border rounded-lg px-4 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 transition"
+              placeholder="you@example.com"
+            />
+            {errors.email && (
+              <p className="text-error text-xs mt-1.5">
+                {errors.email.message}
+              </p>
+            )}
+          </div>
+
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-text-primary mb-1.5">
+              Password
+            </label>
+            <input
+              type="password"
+              {...register("password")}
+              className="w-full border border-border rounded-lg px-4 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 transition"
+              placeholder="At least 8 characters"
+            />
+            {errors.password && (
+              <p className="text-error text-xs mt-1.5">
+                {errors.password.message}
+              </p>
+            )}
+          </div>
+
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full bg-primary hover:bg-primary-hover text-white text-sm font-medium py-2.5 rounded-full transition disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isSubmitting ? "Creating account..." : "Sign Up"}
+          </button>
+
+          <p className="text-sm text-center text-text-secondary mt-6">
+            Already have an account?{" "}
+            <Link
+              to="/login"
+              className="text-primary hover:underline font-medium"
+            >
+              Log in
+            </Link>
+          </p>
+        </form>
+      </div>
     </div>
   );
 }
