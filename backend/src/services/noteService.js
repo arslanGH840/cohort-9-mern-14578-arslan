@@ -16,59 +16,93 @@ class NotFoundError extends Error {
 }
 
 const listNotes = async (userId, { page, pageSize, sortBy, order, search }) => {
-  const limit = pageSize;
-  const offset = (page - 1) * pageSize;
+  try {
+    const limit = pageSize;
+    const offset = (page - 1) * pageSize;
 
-  const { count, rows } = await findAllByUser(userId, {
-    limit,
-    offset,
-    sortBy,
-    order,
-    search,
-  });
+    const { count, rows } = await findAllByUser(userId, {
+      limit,
+      offset,
+      sortBy,
+      order,
+      search,
+    });
 
-  return {
-    notes: rows,
-    pagination: {
-      page,
-      pageSize,
-      totalItems: count,
-      totalPages: Math.ceil(count / pageSize),
-    },
-  };
+    return {
+      notes: rows,
+      pagination: {
+        page,
+        pageSize,
+        totalItems: count,
+        totalPages: Math.ceil(count / pageSize),
+      },
+    };
+  } catch (error) {
+    logger.error({ err: error, userId }, "Failed to list notes");
+    throw error;
+  }
 };
 
 const getNoteById = async (id, userId) => {
-  const note = await findByIdAndUser(id, userId);
-  if (!note) {
-    throw new NotFoundError("Note not found");
+  try {
+    const note = await findByIdAndUser(id, userId);
+    if (!note) {
+      throw new NotFoundError("Note not found");
+    }
+    return note;
+  } catch (error) {
+    if (error instanceof NotFoundError) {
+      throw error;
+    }
+    logger.error({ err: error, userId, noteId: id }, "Failed to fetch note");
+    throw error;
   }
-  return note;
 };
 
 const create = async (userId, { title, body }) => {
-  const note = await createNote({ userId, title, body });
-  logger.info({ userId, noteId: note.id }, "Note created");
-  return note;
+  try {
+    const note = await createNote({ userId, title, body });
+    logger.info({ userId, noteId: note.id }, "Note created");
+    return note;
+  } catch (error) {
+    logger.error({ err: error, userId }, "Failed to create note");
+    throw error;
+  }
 };
 
 const update = async (id, userId, { title, body }) => {
-  const note = await findByIdAndUser(id, userId);
-  if (!note) {
-    throw new NotFoundError("Note not found");
+  try {
+    const note = await findByIdAndUser(id, userId);
+    if (!note) {
+      throw new NotFoundError("Note not found");
+    }
+    const updated = await updateNote(note, { title, body });
+    logger.info({ userId, noteId: id }, "Note updated");
+    return updated;
+  } catch (error) {
+    if (error instanceof NotFoundError) {
+      throw error;
+    }
+    logger.error({ err: error, userId, noteId: id }, "Failed to update note");
+    throw error;
   }
-  const updated = await updateNote(note, { title, body });
-  logger.info({ userId, noteId: id }, "Note updated");
-  return updated;
 };
 
 const remove = async (id, userId) => {
-  const note = await findByIdAndUser(id, userId);
-  if (!note) {
-    throw new NotFoundError("Note not found");
+  try {
+    const note = await findByIdAndUser(id, userId);
+    if (!note) {
+      throw new NotFoundError("Note not found");
+    }
+    await deleteNote(note);
+    logger.info({ userId, noteId: id }, "Note deleted");
+  } catch (error) {
+    if (error instanceof NotFoundError) {
+      throw error;
+    }
+    logger.error({ err: error, userId, noteId: id }, "Failed to delete note");
+    throw error;
   }
-  await deleteNote(note);
-  logger.info({ userId, noteId: id }, "Note deleted");
 };
 
 module.exports = {
