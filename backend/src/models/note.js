@@ -1,7 +1,13 @@
 const { DataTypes, Model } = require("sequelize");
 const { sequelize } = require("../database");
 
-class Note extends Model {}
+class Note extends Model {
+  toJSON() {
+    const values = { ...this.get() };
+    delete values.user_id;
+    return values;
+  }
+}
 
 Note.init(
   {
