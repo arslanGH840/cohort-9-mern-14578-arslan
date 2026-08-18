@@ -20,14 +20,23 @@ export function AuthProvider({ children }) {
         const response = await axiosInstance.get("/auth/me", {
           headers: { Authorization: `Bearer ${storedToken}` },
         });
+
+        if (localStorage.getItem("token") !== storedToken) {
+          return;
+        }
+
         setUser(response.data.data.user);
         setToken(storedToken);
       } catch (error) {
-        localStorage.removeItem("token");
-        setUser(null);
-        setToken(null);
+        if (localStorage.getItem("token") === storedToken) {
+          localStorage.removeItem("token");
+          setUser(null);
+          setToken(null);
+        }
       } finally {
-        setIsLoading(false);
+        if (localStorage.getItem("token") === storedToken) {
+          setIsLoading(false);
+        }
       }
     };
 
@@ -65,4 +74,3 @@ export function useAuth() {
   }
   return context;
 }
-    
