@@ -1,14 +1,12 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema } from "../validations/authSchemas";
-import { loginUser } from "../services/authService";
-import { useAuth } from "../context/AuthContext";
+import { registerSchema } from "../validations/authSchemas";
+import { registerUser } from "../services/authService";
 
-function Login() {
+function Register() {
   const navigate = useNavigate();
-  const { login } = useAuth();
   const [serverError, setServerError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -17,16 +15,15 @@ function Login() {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(registerSchema),
   });
 
   const onSubmit = async (data) => {
     setServerError("");
     setIsSubmitting(true);
     try {
-      const result = await loginUser(data);
-      login(result.data.user, result.data.token);
-      navigate("/");
+      await registerUser(data);
+      navigate("/login");
     } catch (error) {
       setServerError(
         error.response?.data?.error?.message ||
@@ -45,7 +42,7 @@ function Login() {
             Notes App
           </h1>
           <p className="text-text-secondary text-sm mt-2">
-            Welcome back — log in to your notes
+            Create an account to get started
           </p>
         </div>
 
@@ -67,11 +64,28 @@ function Login() {
               type="text"
               {...register("username")}
               className="w-full border border-border rounded-lg px-4 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 transition"
-              placeholder="Enter your username"
+              placeholder="Choose a username"
             />
             {errors.username && (
               <p className="text-error text-xs mt-1.5">
                 {errors.username.message}
+              </p>
+            )}
+          </div>
+
+          <div className="mb-5">
+            <label className="block text-sm font-medium text-text-primary mb-1.5">
+              Email
+            </label>
+            <input
+              type="email"
+              {...register("email")}
+              className="w-full border border-border rounded-lg px-4 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 transition"
+              placeholder="you@example.com"
+            />
+            {errors.email && (
+              <p className="text-error text-xs mt-1.5">
+                {errors.email.message}
               </p>
             )}
           </div>
@@ -84,7 +98,7 @@ function Login() {
               type="password"
               {...register("password")}
               className="w-full border border-border rounded-lg px-4 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 transition"
-              placeholder="••••••••"
+              placeholder="At least 8 characters"
             />
             {errors.password && (
               <p className="text-error text-xs mt-1.5">
@@ -98,17 +112,17 @@ function Login() {
             disabled={isSubmitting}
             className="w-full bg-primary hover:bg-primary-hover text-white text-sm font-medium py-2.5 rounded-full transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isSubmitting ? "Logging in..." : "Log In"}
+            {isSubmitting ? "Creating account..." : "Sign Up"}
           </button>
 
           <p className="text-sm text-center text-text-secondary mt-6">
-            Don't have an account?{" "}
-            <a
-              href="/register"
+            Already have an account?{" "}
+            <Link
+              to="/login"
               className="text-primary hover:underline font-medium"
             >
-              Sign up
-            </a>
+              Log in
+            </Link>
           </p>
         </form>
       </div>
@@ -116,4 +130,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Register;
