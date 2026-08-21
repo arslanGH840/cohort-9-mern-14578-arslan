@@ -17,7 +17,7 @@ function NoteCard({ note, onClick }) {
   );
 
   return (
-    <Card hoverable onClick={onClick}>
+    <Card hoverable as="button" onClick={onClick} className="text-left w-full">
       <div className="flex items-start justify-between mb-2">
         <h3 className="font-semibold text-text-primary truncate pr-2">
           {note.title}

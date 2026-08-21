@@ -45,13 +45,19 @@ function Dashboard() {
         </Button>
       </div>
 
-      <input
-        type="text"
-        placeholder="Search notes..."
-        value={search}
-        onChange={handleSearchChange}
-        className="w-full sm:w-80 border border-border rounded-full px-4 py-2 text-sm mb-6 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1"
-      />
+      <div className="mb-6">
+        <label htmlFor="note-search" className="sr-only">
+          Search notes
+        </label>
+        <input
+          id="note-search"
+          type="text"
+          placeholder="Search notes..."
+          value={search}
+          onChange={handleSearchChange}
+          className="w-full sm:w-80 border border-border rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1"
+        />
+      </div>
 
       {isLoading && <Loader label="Loading your notes..." />}
 

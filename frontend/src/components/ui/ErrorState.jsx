@@ -1,7 +1,13 @@
 function ErrorState({ title = "Something went wrong", description, onRetry }) {
   return (
-    <div className="flex flex-col items-center justify-center text-center py-16 px-4">
-      <div className="w-16 h-16 rounded-full bg-error-bg flex items-center justify-center mb-4 text-error">
+    <div
+      role="alert"
+      className="flex flex-col items-center justify-center text-center py-16 px-4"
+    >
+      <div
+        aria-hidden="true"
+        className="w-16 h-16 rounded-full bg-error-bg flex items-center justify-center mb-4 text-error"
+      >
         !
       </div>
       <h3 className="text-lg font-semibold text-text-primary mb-1">{title}</h3>
