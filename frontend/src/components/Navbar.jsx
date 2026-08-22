@@ -26,9 +26,12 @@ function Navbar() {
         </Link>
 
         <div className="flex items-center gap-4">
-          <span className="text-sm text-text-secondary hidden sm:inline">
+          <Link
+            to="/profile"
+            className="text-sm text-text-secondary hover:text-primary hidden sm:inline"
+          >
             {user?.username}
-          </span>
+          </Link>
           <Button variant="ghost" onClick={handleLogout}>
             Log Out
           </Button>

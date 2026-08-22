@@ -1,4 +1,7 @@
+import { useState } from "react";
 import Card from "../../../components/ui/Card";
+import DeleteNoteModal from "./DeleteNoteModal";
+import { sanitizeHtml } from "../../../utils/sanitizeHtml";
 
 function stripHtml(html) {
   const div = document.createElement("div");
@@ -7,7 +10,11 @@ function stripHtml(html) {
 }
 
 function NoteCard({ note, onClick }) {
-  const preview = stripHtml(note.body).slice(0, 120);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const plainText = stripHtml(note.body);
+  const preview = plainText.slice(0, 55);
+  const isTruncated = plainText.length > 55;
   const formattedDate = new Date(note.updated_at).toLocaleDateString(
     undefined,
     {
@@ -16,20 +23,69 @@ function NoteCard({ note, onClick }) {
     },
   );
 
+  const handleDeleteClick = (e) => {
+    e.stopPropagation();
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleToggleExpand = (e) => {
+    e.stopPropagation();
+    setIsExpanded((prev) => !prev);
+  };
+
   return (
-    <Card hoverable as="button" onClick={onClick} className="text-left w-full">
-      <div className="flex items-start justify-between mb-2">
-        <h3 className="font-semibold text-text-primary truncate pr-2">
-          {note.title}
-        </h3>
-        <span className="text-xs text-text-muted whitespace-nowrap">
-          {formattedDate}
+    <>
+      <Card
+        hoverable
+        as="button"
+        onClick={onClick}
+        className="text-left w-full flex flex-col"
+      >
+        <div className="flex items-start justify-between mb-2">
+          <h3 className="font-semibold text-text-primary truncate pr-2">
+            {note.title}
+          </h3>
+          <span className="text-xs text-text-muted whitespace-nowrap">
+            {formattedDate}
+          </span>
+        </div>
+        {isExpanded ? (
+          <div
+            className="text-text-secondary text-sm mb-2 prose prose-sm max-w-none break-words overflow-x-hidden"
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(note.body) }}
+          />
+        ) : (
+          <p className="text-text-secondary text-sm line-clamp-3 mb-2">
+            {preview || "No content"}
+          </p>
+        )}
+        {isTruncated && (
+          <span
+            role="button"
+            tabIndex={0}
+            onClick={handleToggleExpand}
+            onKeyDown={(e) => e.key === "Enter" && handleToggleExpand(e)}
+            className="text-primary hover:underline text-xs font-medium mb-2 self-start"
+          >
+            {isExpanded ? "See less" : "See more"}
+          </span>
+        )}
+        <span
+          role="button"
+          tabIndex={0}
+          onClick={handleDeleteClick}
+          onKeyDown={(e) => e.key === "Enter" && handleDeleteClick(e)}
+          className="mt-auto self-end text-text-muted hover:text-error text-xs font-medium"
+        >
+          Delete
         </span>
-      </div>
-      <p className="text-text-secondary text-sm line-clamp-3">
-        {preview || "No content"}
-      </p>
-    </Card>
+      </Card>
+      <DeleteNoteModal
+        noteId={note.id}
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+      />
+    </>
   );
 }
 
