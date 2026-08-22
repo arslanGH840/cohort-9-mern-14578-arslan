@@ -38,10 +38,12 @@ function NoteCard({ note, onClick }) {
   return (
     <>
       <Card className="flex flex-col">
-        <button
-          type="button"
+        <div
+          role="button"
+          tabIndex={0}
           onClick={onClick}
-          className="text-left w-full flex-1"
+          onKeyDown={(e) => e.key === "Enter" && onClick(e)}
+          className="text-left w-full flex-1 cursor-pointer"
         >
           <div className="flex items-start justify-between mb-2">
             <h3 className="font-semibold text-text-primary truncate pr-2">
@@ -62,7 +64,7 @@ function NoteCard({ note, onClick }) {
               {preview || "No content"}
             </p>
           )}
-        </button>
+        </div>
 
         <div className="flex items-center justify-between mt-auto pt-1">
           {isTruncated ? (

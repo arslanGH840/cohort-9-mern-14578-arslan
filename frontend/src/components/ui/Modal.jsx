@@ -18,14 +18,20 @@ function Modal({ isOpen, onClose, title, children }) {
 
       if (e.key === "Tab") {
         const focusableElements = dialogRef.current?.querySelectorAll(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+          'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
         );
-        if (!focusableElements || focusableElements.length === 0) return;
+        if (!focusableElements || focusableElements.length === 0) {
+          e.preventDefault();
+          return;
+        }
 
         const first = focusableElements[0];
         const last = focusableElements[focusableElements.length - 1];
+        const isBeforeFirst =
+          document.activeElement === dialogRef.current ||
+          document.activeElement === first;
 
-        if (e.shiftKey && document.activeElement === first) {
+        if (e.shiftKey && isBeforeFirst) {
           e.preventDefault();
           last.focus();
         } else if (!e.shiftKey && document.activeElement === last) {
