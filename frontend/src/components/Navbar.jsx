@@ -28,7 +28,7 @@ function Navbar() {
         <div className="flex items-center gap-4">
           <Link
             to="/profile"
-            className="text-sm text-text-secondary hover:text-primary hidden sm:inline"
+            className="text-sm text-text-secondary hover:text-primary"
           >
             {user?.username}
           </Link>

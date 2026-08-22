@@ -19,7 +19,7 @@ function DeleteNoteModal({ noteId, isOpen, onClose }) {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} title="Delete this note?">
       <h2 className="text-lg font-semibold text-text-primary mb-2">
         Delete this note?
       </h2>

@@ -1,4 +1,48 @@
-function Modal({ isOpen, onClose, children }) {
+import { useEffect, useRef } from "react";
+
+function Modal({ isOpen, onClose, title, children }) {
+  const dialogRef = useRef(null);
+  const previouslyFocusedElement = useRef(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    previouslyFocusedElement.current = document.activeElement;
+    dialogRef.current?.focus();
+
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        onClose();
+        return;
+      }
+
+      if (e.key === "Tab") {
+        const focusableElements = dialogRef.current?.querySelectorAll(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+        );
+        if (!focusableElements || focusableElements.length === 0) return;
+
+        const first = focusableElements[0];
+        const last = focusableElements[focusableElements.length - 1];
+
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      previouslyFocusedElement.current?.focus();
+    };
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (
@@ -7,7 +51,14 @@ function Modal({ isOpen, onClose, children }) {
         className="absolute inset-0 bg-black/40 backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="relative bg-surface rounded-lg shadow-xl p-6 w-full max-w-sm mx-4">
+      <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={title}
+        tabIndex={-1}
+        className="relative bg-surface rounded-lg shadow-xl p-6 w-full max-w-sm mx-4 focus:outline-none"
+      >
         {children}
       </div>
     </div>

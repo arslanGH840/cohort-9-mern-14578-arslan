@@ -56,6 +56,7 @@ function NoteEditorPage() {
         {isEditMode ? "Edit Note" : "New Note"}
       </h1>
       <NoteForm
+        key={id ?? "new"}
         defaultValues={
           isEditMode
             ? { title: existingNote.title, body: existingNote.body }
