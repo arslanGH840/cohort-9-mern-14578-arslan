@@ -24,8 +24,9 @@ function Navbar() {
       <div className="max-w-6xl mx-auto flex items-center justify-between">
         <Link
           to="/"
-          className="text-2xl font-extrabold tracking-tight text-[#4F46E5]"
+          className="flex items-center gap-2 text-2xl font-extrabold tracking-tight text-[#4F46E5]"
         >
+          <img src="/logo.png" alt="" className="w-8 h-8 object-contain" />
           Vellum
         </Link>
 

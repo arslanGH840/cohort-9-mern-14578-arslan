@@ -24,6 +24,7 @@ function SortSelect({ value, onChange }) {
       <select
         value={currentIndex}
         onChange={handleChange}
+        aria-label="Sort notes"
         className="appearance-none border border-border rounded-full pl-8 pr-8 py-2 text-sm text-text-primary bg-surface focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1"
       >
         {SORT_OPTIONS.map((opt, index) => (
