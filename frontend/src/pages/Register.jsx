@@ -2,8 +2,10 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Mail, UserPlus, User } from "lucide-react";
 import { registerSchema } from "../validations/authSchemas";
 import { registerUser } from "../services/authService";
+import PasswordInput from "../components/ui/PasswordInput";
 
 function Register() {
   const navigate = useNavigate();
@@ -37,12 +39,15 @@ function Register() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-bg-page px-4 font-sans">
       <div className="w-full max-w-md">
-        <div className="text-center mb-8">
+        <div className="flex flex-col items-center text-center mb-8">
+          <div className="w-14 h-14 rounded-full bg-surface-alt flex items-center justify-center mb-4 text-primary">
+            <UserPlus size={24} />
+          </div>
           <h1 className="text-2xl font-semibold tracking-tight text-text-primary">
-            Notes App
+            Create your account
           </h1>
           <p className="text-text-secondary text-sm mt-2">
-            Create an account to get started
+            Join Vellum to get started
           </p>
         </div>
 
@@ -57,15 +62,25 @@ function Register() {
           )}
 
           <div className="mb-5">
-            <label className="block text-sm font-medium text-text-primary mb-1.5">
+            <label
+              htmlFor="username"
+              className="block text-sm font-medium text-text-primary mb-1.5"
+            >
               Username
             </label>
-            <input
-              type="text"
-              {...register("username")}
-              className="w-full border border-border rounded-lg px-4 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 transition"
-              placeholder="Choose a username"
-            />
+            <div className="relative">
+              <User
+                size={16}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none"
+              />
+              <input
+                id="username"
+                type="text"
+                {...register("username")}
+                className="w-full border border-border rounded-lg pl-9 pr-4 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 transition"
+                placeholder="Choose a username"
+              />
+            </div>
             {errors.username && (
               <p className="text-error text-xs mt-1.5">
                 {errors.username.message}
@@ -74,15 +89,25 @@ function Register() {
           </div>
 
           <div className="mb-5">
-            <label className="block text-sm font-medium text-text-primary mb-1.5">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-text-primary mb-1.5"
+            >
               Email
             </label>
-            <input
-              type="email"
-              {...register("email")}
-              className="w-full border border-border rounded-lg px-4 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 transition"
-              placeholder="you@example.com"
-            />
+            <div className="relative">
+              <Mail
+                size={16}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none"
+              />
+              <input
+                id="email"
+                type="email"
+                {...register("email")}
+                className="w-full border border-border rounded-lg pl-9 pr-4 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 transition"
+                placeholder="you@example.com"
+              />
+            </div>
             {errors.email && (
               <p className="text-error text-xs mt-1.5">
                 {errors.email.message}
@@ -91,14 +116,16 @@ function Register() {
           </div>
 
           <div className="mb-6">
-            <label className="block text-sm font-medium text-text-primary mb-1.5">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-text-primary mb-1.5"
+            >
               Password
             </label>
-            <input
-              type="password"
-              {...register("password")}
-              className="w-full border border-border rounded-lg px-4 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 transition"
+            <PasswordInput
+              id="password"
               placeholder="At least 8 characters"
+              {...register("password")}
             />
             {errors.password && (
               <p className="text-error text-xs mt-1.5">
