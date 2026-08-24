@@ -12,7 +12,7 @@ function Card({
 
   return (
     <Component
-      className={`bg-surface border border-border rounded-lg p-5 ${hoverClasses} ${className}`}
+      className={`bg-surface border border-border rounded-lg p-5 min-w-0 overflow-hidden ${hoverClasses} ${className}`}
       {...props}
     >
       {children}
