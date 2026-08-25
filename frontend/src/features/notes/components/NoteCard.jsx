@@ -1,3 +1,4 @@
+import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import Card from "../../../components/ui/Card";
 import DeleteNoteModal from "./DeleteNoteModal";
@@ -82,8 +83,9 @@ function NoteCard({ note, onClick }) {
           <button
             type="button"
             onClick={handleDeleteClick}
-            className="text-text-muted hover:text-error text-xs font-medium"
+            className="flex items-center gap-1 text-text-muted hover:text-error text-xs font-medium"
           >
+            <Trash2 size={14} />
             Delete
           </button>
         </div>
