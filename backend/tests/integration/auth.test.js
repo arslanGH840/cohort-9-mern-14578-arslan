@@ -8,80 +8,80 @@ describe("Auth API (integration)", () => {
     await cleanDatabase();
   });
 
-  describe("POST /api/auth/register", () => {
-    it("registers a new user and returns 201", async () => {
-      const res = await request(app).post("/api/auth/register").send({
-        username: "integrationuser",
-        email: "integration@example.com",
-        password: "SecurePass123",
-      });
-
-      expect(res.status).to.equal(201);
-      expect(res.body.success).to.be.true;
-      expect(res.body.data.user.username).to.equal("integrationuser");
-      expect(res.body.data.user.password_hash).to.be.undefined;
+describe("POST /api/auth/register", () => {
+  it("registers a new user and returns 201", async () => {
+    const res = await request(app).post("/api/auth/register").send({
+      username: "integrationuser",
+      email: "integration@example.com",
+      password: "SecurePass123",
     });
 
-    it("rejects duplicate username with 409", async () => {
-      await request(app).post("/api/auth/register").send({
-        username: "dupeuser",
-        email: "first@example.com",
-        password: "SecurePass123",
-      });
-      it("rejects a username shorter than 3 characters", async () => {
-        const res = await request(app).post("/api/auth/register").send({
-          username: "ab",
-          email: "valid@example.com",
-          password: "SecurePass123",
-        });
-        expect(res.status).to.equal(400);
-        expect(res.body.error.details.some((d) => d.field === "username")).to.be
-          .true;
-      });
-
-      it("rejects a password shorter than 8 characters", async () => {
-        const res = await request(app).post("/api/auth/register").send({
-          username: "validuser",
-          email: "valid@example.com",
-          password: "short",
-        });
-        expect(res.status).to.equal(400);
-        expect(res.body.error.details.some((d) => d.field === "password")).to.be
-          .true;
-      });
-
-      it("rejects a malformed email address", async () => {
-        const res = await request(app).post("/api/auth/register").send({
-          username: "validuser",
-          email: "not-an-email-at-all",
-          password: "SecurePass123",
-        });
-        expect(res.status).to.equal(400);
-        expect(res.body.error.details.some((d) => d.field === "email")).to.be
-          .true;
-      });
-
-      const res = await request(app).post("/api/auth/register").send({
-        username: "dupeuser",
-        email: "second@example.com",
-        password: "SecurePass123",
-      });
-
-      expect(res.status).to.equal(409);
-      expect(res.body.success).to.be.false;
-    });
-
-    it("rejects invalid input with 400", async () => {
-      const res = await request(app).post("/api/auth/register").send({
-        username: "ab",
-        email: "not-an-email",
-        password: "123",
-      });
-
-      expect(res.status).to.equal(400);
-      expect(res.body.error.details).to.be.an("array");
-    });
+    expect(res.status).to.equal(201);
+    expect(res.body.success).to.be.true;
+    expect(res.body.data.user.username).to.equal("integrationuser");
+    expect(res.body.data.user.password_hash).to.be.undefined;
   });
+
+  it("rejects duplicate username with 409", async () => {
+    await request(app).post("/api/auth/register").send({
+      username: "dupeuser",
+      email: "first@example.com",
+      password: "SecurePass123",
+    });
+
+    const res = await request(app).post("/api/auth/register").send({
+      username: "dupeuser",
+      email: "second@example.com",
+      password: "SecurePass123",
+    });
+
+    expect(res.status).to.equal(409);
+    expect(res.body.success).to.be.false;
+  });
+
+  it("rejects invalid input with 400", async () => {
+    const res = await request(app).post("/api/auth/register").send({
+      username: "ab",
+      email: "not-an-email",
+      password: "123",
+    });
+
+    expect(res.status).to.equal(400);
+    expect(res.body.error.details).to.be.an("array");
+  });
+
+  it("rejects a username shorter than 3 characters", async () => {
+    const res = await request(app).post("/api/auth/register").send({
+      username: "ab",
+      email: "valid@example.com",
+      password: "SecurePass123",
+    });
+    expect(res.status).to.equal(400);
+    expect(res.body.error.details.some((d) => d.field === "username")).to.be
+      .true;
+  });
+
+  it("rejects a password shorter than 8 characters", async () => {
+    const res = await request(app).post("/api/auth/register").send({
+      username: "validuser",
+      email: "valid@example.com",
+      password: "short",
+    });
+    expect(res.status).to.equal(400);
+    expect(res.body.error.details.some((d) => d.field === "password")).to.be
+      .true;
+  });
+
+  it("rejects a malformed email address", async () => {
+    const res = await request(app).post("/api/auth/register").send({
+      username: "validuser",
+      email: "not-an-email-at-all",
+      password: "SecurePass123",
+    });
+    expect(res.status).to.equal(400);
+    expect(res.body.error.details.some((d) => d.field === "email")).to.be.true;
+  });
+});
 
   describe("POST /api/auth/login", () => {
     beforeEach(async () => {
