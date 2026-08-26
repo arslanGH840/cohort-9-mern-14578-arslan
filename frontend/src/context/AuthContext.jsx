@@ -52,12 +52,14 @@ export function AuthProvider({ children }) {
     localStorage.setItem("token", authToken);
     setToken(authToken);
     setUser(userData);
+    setIsLoading(false);
   };
 
   const logout = () => {
     localStorage.removeItem("token");
     setToken(null);
     setUser(null);
+    setIsLoading(false);
   };
 
   const value = {

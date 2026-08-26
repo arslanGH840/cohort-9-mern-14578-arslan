@@ -5,4 +5,12 @@ module.exports = {
     "\\.(css|less|scss)$": "identity-obj-proxy",
   },
   testPathIgnorePatterns: ["/node_modules/"],
+  coverageThreshold: {
+    global: {
+      statements: 75,
+      branches: 60,
+      functions: 60,
+      lines: 75,
+    },
+  },
 };
