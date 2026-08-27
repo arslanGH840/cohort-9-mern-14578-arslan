@@ -16,12 +16,15 @@ export function AuthProvider({ children }) {
         return;
       }
 
+      let tokenWasSuperseded = false;
+
       try {
         const response = await axiosInstance.get("/auth/me", {
           headers: { Authorization: `Bearer ${storedToken}` },
         });
 
         if (localStorage.getItem("token") !== storedToken) {
+          tokenWasSuperseded = true;
           return;
         }
 
@@ -32,9 +35,11 @@ export function AuthProvider({ children }) {
           localStorage.removeItem("token");
           setUser(null);
           setToken(null);
+        } else {
+          tokenWasSuperseded = true;
         }
       } finally {
-        if (localStorage.getItem("token") === storedToken) {
+        if (!tokenWasSuperseded) {
           setIsLoading(false);
         }
       }
@@ -47,12 +52,14 @@ export function AuthProvider({ children }) {
     localStorage.setItem("token", authToken);
     setToken(authToken);
     setUser(userData);
+    setIsLoading(false);
   };
 
   const logout = () => {
     localStorage.removeItem("token");
     setToken(null);
     setUser(null);
+    setIsLoading(false);
   };
 
   const value = {
