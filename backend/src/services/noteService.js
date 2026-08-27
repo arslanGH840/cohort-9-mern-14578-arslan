@@ -1,10 +1,4 @@
-const {
-  findAllByUser,
-  findByIdAndUser,
-  createNote,
-  updateNote,
-  deleteNote,
-} = require("../repositories/noteRepository");
+const noteRepository = require("../repositories/noteRepository");
 const logger = require("../config/logger");
 
 class NotFoundError extends Error {
@@ -20,7 +14,7 @@ const listNotes = async (userId, { page, pageSize, sortBy, order, search }) => {
     const limit = pageSize;
     const offset = (page - 1) * pageSize;
 
-    const { count, rows } = await findAllByUser(userId, {
+    const { count, rows } = await noteRepository.findAllByUser(userId, {
       limit,
       offset,
       sortBy,
@@ -45,7 +39,7 @@ const listNotes = async (userId, { page, pageSize, sortBy, order, search }) => {
 
 const getNoteById = async (id, userId) => {
   try {
-    const note = await findByIdAndUser(id, userId);
+    const note = await noteRepository.findByIdAndUser(id, userId);
     if (!note) {
       throw new NotFoundError("Note not found");
     }
@@ -61,7 +55,7 @@ const getNoteById = async (id, userId) => {
 
 const create = async (userId, { title, body }) => {
   try {
-    const note = await createNote({ userId, title, body });
+    const note = await noteRepository.createNote({ userId, title, body });
     logger.info({ userId, noteId: note.id }, "Note created");
     return note;
   } catch (error) {
@@ -72,11 +66,11 @@ const create = async (userId, { title, body }) => {
 
 const update = async (id, userId, { title, body }) => {
   try {
-    const note = await findByIdAndUser(id, userId);
+    const note = await noteRepository.findByIdAndUser(id, userId);
     if (!note) {
       throw new NotFoundError("Note not found");
     }
-    const updated = await updateNote(note, { title, body });
+    const updated = await noteRepository.updateNote(note, { title, body });
     logger.info({ userId, noteId: id }, "Note updated");
     return updated;
   } catch (error) {
@@ -90,11 +84,11 @@ const update = async (id, userId, { title, body }) => {
 
 const remove = async (id, userId) => {
   try {
-    const note = await findByIdAndUser(id, userId);
+    const note = await noteRepository.findByIdAndUser(id, userId);
     if (!note) {
       throw new NotFoundError("Note not found");
     }
-    await deleteNote(note);
+    await noteRepository.deleteNote(note);
     logger.info({ userId, noteId: id }, "Note deleted");
   } catch (error) {
     if (error instanceof NotFoundError) {

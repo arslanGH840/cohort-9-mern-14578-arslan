@@ -1,10 +1,6 @@
-const {
-  findByUsername,
-  findByEmail,
-  createUser,
-} = require("../repositories/userRepository");
-const { hashPassword, comparePassword } = require("../utils/password");
-const { signToken } = require("../utils/jwt");
+const userRepository = require("../repositories/userRepository");
+const passwordUtil = require("../utils/password");
+const jwtUtil = require("../utils/jwt");
 const { UniqueConstraintError } = require("sequelize");
 const logger = require("../config/logger");
 
@@ -26,22 +22,26 @@ class AuthenticationError extends Error {
 
 const register = async ({ username, email, password }) => {
   try {
-    const existingUsername = await findByUsername(username);
+    const existingUsername = await userRepository.findByUsername(username);
     if (existingUsername) {
       throw new ConflictError(
         "An account with this username or email already exists",
       );
     }
 
-    const existingEmail = await findByEmail(email);
+    const existingEmail = await userRepository.findByEmail(email);
     if (existingEmail) {
       throw new ConflictError(
         "An account with this username or email already exists",
       );
     }
 
-    const password_hash = await hashPassword(password);
-    const user = await createUser({ username, email, password_hash });
+    const password_hash = await passwordUtil.hashPassword(password);
+    const user = await userRepository.createUser({
+      username,
+      email,
+      password_hash,
+    });
 
     logger.info({ username: user.username }, "User registered successfully");
     return user;
@@ -61,19 +61,22 @@ const register = async ({ username, email, password }) => {
 
 const login = async ({ username, password }) => {
   try {
-    const user = await findByUsername(username);
+    const user = await userRepository.findByUsername(username);
     if (!user) {
       logger.warn({ username }, "Login failed: unknown username");
       throw new AuthenticationError("Invalid username or password");
     }
 
-    const isPasswordValid = await comparePassword(password, user.password_hash);
+    const isPasswordValid = await passwordUtil.comparePassword(
+      password,
+      user.password_hash,
+    );
     if (!isPasswordValid) {
       logger.warn({ username }, "Login failed: incorrect password");
       throw new AuthenticationError("Invalid username or password");
     }
 
-    const token = signToken({ id: user.id, username: user.username });
+    const token = jwtUtil.signToken({ id: user.id, username: user.username });
     logger.info({ username: user.username }, "User logged in successfully");
 
     return { user, token };
@@ -81,7 +84,10 @@ const login = async ({ username, password }) => {
     if (error instanceof AuthenticationError) {
       throw error;
     }
-    logger.error({ err: error }, "Login failed unexpectedly");
+    logger.error(
+      { err: error, userId: undefined },
+      "Login failed unexpectedly",
+    );
     throw error;
   }
 };
