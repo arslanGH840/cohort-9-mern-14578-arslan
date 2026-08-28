@@ -13,4 +13,5 @@ module.exports = {
       lines: 75,
     },
   },
+  coverageReporters: ["lcov", "text"],
 };

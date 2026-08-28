@@ -56,6 +56,8 @@ function Modal({ isOpen, onClose, title, children }) {
       <div
         className="absolute inset-0 bg-black/40 backdrop-blur-sm"
         onClick={onClose}
+        role="presentation"
+        aria-hidden="true"
       />
       <div
         ref={dialogRef}

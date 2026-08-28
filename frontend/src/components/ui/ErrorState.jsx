@@ -18,6 +18,7 @@ function ErrorState({ title = "Something went wrong", description, onRetry }) {
       )}
       {onRetry && (
         <button
+          type="button"
           onClick={onRetry}
           className="text-primary text-sm font-medium hover:underline"
         >

@@ -1,4 +1,10 @@
-function Button({ variant = "primary", children, className = "", ...props }) {
+function Button({
+  variant = "primary",
+  type = "button",
+  children,
+  className = "",
+  ...props
+}) {
   const base =
     "text-sm font-medium py-2.5 px-5 rounded-full transition disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1";
 
@@ -10,7 +16,11 @@ function Button({ variant = "primary", children, className = "", ...props }) {
   };
 
   return (
-    <button className={`${base} ${variants[variant]} ${className}`} {...props}>
+    <button
+      type={type}
+      className={`${base} ${variants[variant]} ${className}`}
+      {...props}
+    >
       {children}
     </button>
   );
