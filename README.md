@@ -1,7 +1,7 @@
 markdown
 # Vellum - Notes App
 
-A full stack, privacy focused note taking application built as a MERN stack internship project. Users can sign up, log in, and manage their own private notes with a rich text editor. Every note is scoped to its owner, and the application is built with the same discipline expected of a real production system: layered architecture, structured logging, centralized error handling, automated testing, and static code quality analysis.
+A full stack, privacy focused note taking application built as a full-stack JavaScript internship project (Node.js/Express, React, MySQL). Users can sign up, log in, and manage their own private notes with a rich text editor. Every note is scoped to its owner, and the application is built with the same discipline expected of a real production system: layered architecture, structured logging, centralized error handling, automated testing, and static code quality analysis.
 
 ## Table of Contents
 
@@ -198,7 +198,7 @@ This runs the Jest and React Testing Library suite covering shared UI components
 
 ## API Overview
 
-All endpoints are prefixed with `/api`. Protected endpoints require an `Authorization: Bearer <token>` header.
+Endpoints are generally prefixed with `/api`, with one exception: the health check is mounted directly at `/health`, not under `/api`. Protected endpoints require an `Authorization: Bearer <token>` header.
 
 | Method | Endpoint | Description | Protected |
 |---|---|---|---|
@@ -239,7 +239,7 @@ or on failure:
 
 ## Code Quality
 
-Static analysis was performed with SonarCloud against the full codebase.
+Static analysis was performed with SonarCloud against the application source code in `backend/src` and `frontend/src`. Database migrations and seeders are excluded from analysis, since they are one-time setup scripts rather than application logic.
 
 - Quality Gate: Passed
 - Security rating: A
